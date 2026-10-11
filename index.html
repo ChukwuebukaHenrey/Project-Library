@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Library</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+    <link rel="icon" href="icons/library-svgrepo-com (1).svg" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav>
+        <h1>My Library</h1>
+        <div class="book-search-wrapper">
+          <label for="book-search"> Search Library </label>
+
+          <img src="icons/magnify.svg" alt="magnify icon" class="icon" />
+          <input
+            type="search"
+            autocomplete="off"
+            list="suggestions"
+            placeholder="Type to search books"
+            id="book-search"
+            class="search"
+          />
+
+          <datalist id="suggestions"></datalist>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <button
+        commandfor="book-dialog"
+        command="show-modal"
+        type="button"
+        id="new-book-btn"
+      >
+        New Book
+      </button>
+      <!-- JS fills this container from the myLibrary array -->
+      <section id="library" class="library" aria-label="Books"></section>
+    </main>
+
+    <dialog id="book-dialog">
+      <form id="book-form" method="dialog">
+        <h2>Add a book</h2>
+
+        <div class="field">
+          <label for="title">Title</label>
+          <input type="text" id="title" name="title" required />
+        </div>
+
+        <div class="field">
+          <label for="author">Author</label>
+          <input type="text" id="author" name="author" required />
+        </div>
+
+        <div class="field">
+          <label for="pages">Pages</label>
+          <input type="tel" id="pages" name="pages" min="1" required />
+        </div>
+
+        <div class="field field-checkbox">
+          <input type="checkbox" id="read" name="read" />
+          <label for="read">I have read this book</label>
+        </div>
+
+        <div class="form-actions">
+          <button
+            id="cancelbtn"
+            type="button"
+            command="close"
+            commandfor="book-dialog"
+          >
+            Cancel
+          </button>
+          <button type="submit">Add book</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>

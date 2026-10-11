@@ -1,0 +1,13 @@
+@font-face {
+    font-family: 'Alan Sans';
+    src: url('AlanSans-Light.eot');
+    src: local('Alan Sans Light'), local('AlanSans-Light'),
+        url('AlanSans-Light.eot?#iefix') format('embedded-opentype'),
+        url('AlanSans-Light.woff2') format('woff2'),
+        url('AlanSans-Light.woff') format('woff'),
+        url('AlanSans-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
