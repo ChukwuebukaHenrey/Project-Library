@@ -1,40 +1,60 @@
 const library = document.getElementById("library");
 const dialog = document.getElementById("book-dialog");
 const form = document.getElementById("book-form");
-const cancelBtn = document.getElementById("cancel-btn");
-const submitBtn = document.querySelector('button[type = "submit"]');
-const remove = document.querySelector(".removeBtn");
 const search = document.querySelector('input[type="search"]');
 
-const myLibrary = [];
-
-function Book(title, author, noOfPages, haveRead) {
-  if (!new.target) {
-    throw new Error("you have to use the new keyword");
+class Book {
+  constructor(title, author, noOfPages, haveRead) {
+    this.id = crypto.randomUUID();
+    this.author = author;
+    this.title = title;
+    this.noOfPages = noOfPages;
+    this.haveRead = haveRead;
   }
-  this.id = crypto.randomUUID();
-  this.author = author;
-  this.title = title;
-  this.noOfPages = noOfPages;
-  this.haveRead = haveRead;
+  toggleReadStatus() {
+    return (this.haveRead = !this.haveRead);
+  }
 }
 
-Book.prototype.toggleReadStatus = function () {
-  this.haveRead = !this.haveRead;
-};
+class Library {
+  #book = [];
+
+  add(book) {
+    this.#book.push(book);
+  }
+
+  search(query) {
+    const q = query.toLowerCase();
+    return this.#book.filter(
+      (book) =>
+        book.title?.toLowerCase().includes(q) ||
+        book.author?.toLowerCase().includes(q),
+    );
+  }
+
+  removeBook(id) {
+    const index = this.#book.findIndex((b) => b.id === id);
+    if (index === -1) return false;
+    this.#book.splice(index, 1);
+    return true;
+  }
+}
+
+const myLibrary = new Library();
 
 const addBooktolibrary = (title, author, noOfPages, haveRead) => {
   const book = new Book(title, author, noOfPages, haveRead);
-  console.log(book);
+  console.log(book); // i added this for debugging
 
-  myLibrary.push(book);
-  renderBook(book);
-  console.log(myLibrary);
+  myLibrary.add(book);
+  renderLibrary();
+  console.log(myLibrary); // i added this for debugging
 };
 
 dialog.addEventListener("close", () => form.reset());
 
-form.addEventListener("submit", () => {
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
   const data = new FormData(form);
 
   const title = data.get("title");
@@ -43,19 +63,12 @@ form.addEventListener("submit", () => {
   const haveRead = data.get("read") === "on";
 
   addBooktolibrary(title, author, noOfPages, haveRead);
+  dialog.close();
 });
 
-const renderBook = () => {
-  const query = search.value.toLowerCase();
-  console.log(query);
-
-  const visibleBooks = myLibrary.filter(
-    (book) =>
-      book.title?.toLowerCase().includes(query) ||
-      book.author?.toLowerCase().includes(query),
-  );
-
-  console.log(visibleBooks);
+const renderLibrary = () => {
+  const query = search.value;
+  visibleBooks = myLibrary.search(query);
 
   library.replaceChildren();
   visibleBooks.forEach((book) => {
@@ -97,18 +110,18 @@ const renderBook = () => {
     library.append(card);
 
     removeBtn.addEventListener("click", () => {
-      const index = myLibrary.findIndex((b) => b.id === book.id);
-      index !== -1
-        ? myLibrary.splice(index, 1)
-        : console.warn("this shii aint real");
-      renderBook();
+      if (!myLibrary.removeBook(book.id)) {
+        console.warn("No Book with that ID");
+      }
+      renderLibrary();
     });
 
     toggleBtn.addEventListener("click", () => {
       book.toggleReadStatus();
-      renderBook();
+      renderLibrary();
+      console.log(myLibrary);
     });
   });
 };
 
-search.addEventListener("input", renderBook);
+search.addEventListener("input", renderLibrary);
